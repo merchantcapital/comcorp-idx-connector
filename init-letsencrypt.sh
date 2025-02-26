@@ -7,7 +7,15 @@
 domains=(comcorp-uat.merchantcapital.co.za)
 rsa_key_size=4096
 data_path="./certbot"
-email="" # Add your email here for certificate expiry notifications
+
+# Use environment variable for email if set, otherwise use empty string
+if [ -z "$CERTBOT_EMAIL" ]; then
+  echo "Warning: CERTBOT_EMAIL environment variable not set. Certificate expiry notifications will not be sent."
+  email=""
+else
+  echo "Using email: $CERTBOT_EMAIL for certificate expiry notifications."
+  email="$CERTBOT_EMAIL"
+fi
 
 # Check if domain is set
 if [ -z "$domains" ]; then

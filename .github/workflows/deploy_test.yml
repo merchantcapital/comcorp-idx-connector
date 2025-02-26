@@ -1,0 +1,148 @@
+# Unique name for this workflow
+name: Docker CL/CD Pipeline Test
+
+# Definition when the workflow should run
+on:
+  push:
+    branches: [test]
+
+# Jobs to be executed
+jobs:
+  test-with-pytest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+
+      - name: Run tests with pytest
+        run: |
+          pytest
+
+  build-and-push-to-test:
+    needs: test-with-pytest
+    runs-on: ubuntu-latest
+    environment: test
+
+    steps:
+      # Checkout the source code
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      # Login to Elastic Container Registry
+      - name: Login to ECR
+        uses: docker/login-action@v3
+        with:
+          registry: 655149046626.dkr.ecr.eu-west-1.amazonaws.com
+          username: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      # Build, tag and push
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: 655149046626.dkr.ecr.eu-west-1.amazonaws.com/comcorp-idx-connector:test
+
+  deploy-to-EC2:
+    needs: build-and-push-to-test
+    runs-on: ubuntu-latest
+    environment: test
+
+    steps:
+      # Checkout the source code to get the files we need to copy
+      - name: "Checkout source code"
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Get .env.test file from S3
+        uses: someimportantcompany/github-actions-aws-s3-env@v1
+        with:
+            from: s3://mc-dotenv/comcorp-idx-connector-dotenv/.env.test
+            prefix: DOTENV_
+
+      - name: Copy files to EC2 server and run deployment
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          source: "init-letsencrypt.sh,docker-compose-test.yml,config/nginx_docker.conf"
+          target: "~/"
+          
+      - name: Docker pull & run from github
+        uses: appleboy/ssh-action@master
+        env:
+          AWSID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWSKEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          REGION: ${{ secrets.AWS_REGION }}
+          S3_STORAGE_PREFIX: ${{ env.DOTENV_S3_STORAGE_PREFIX }}
+          CERTBOT_EMAIL: ${{ secrets.CERTBOT_EMAIL }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          envs: AWSID,AWSKEY,REGION,CERTBOT_EMAIL
+          script: |
+            aws configure set aws_access_key_id $AWSID
+            aws configure set aws_secret_access_key $AWSKEY
+            aws configure set default.region $REGION
+            
+            # Export CERTBOT_EMAIL for the init-letsencrypt.sh script
+            export CERTBOT_EMAIL=$CERTBOT_EMAIL
+            echo "Update .env.test"
+            rm .env.test
+            touch .env.test
+            echo BASIC_AUTH_USERNAME=$BASIC_AUTH_USERNAME >> .env.test
+            echo BASIC_AUTH_PASSWORD=$BASIC_AUTH_PASSWORD >> .env.test
+            cat .env.test
+            echo "AWS ECR login"
+            aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 655149046626.dkr.ecr.eu-west-1.amazonaws.com
+            echo "Docker compose pull"
+            docker compose -f docker-compose-test.yml pull
+            echo "Docker compose down"
+            docker compose -f docker-compose-test.yml down
+            
+            # Prepare for Certbot initialization
+            echo "Creating Certbot directories if they don't exist"
+            mkdir -p certbot/conf
+            mkdir -p certbot/www
+            
+            # Make sure the init-letsencrypt.sh script is executable
+            echo "Making init-letsencrypt.sh executable"
+            chmod +x init-letsencrypt.sh
+            
+            # Run the Certbot initialization script
+            echo "Running Certbot initialization script"
+            ./init-letsencrypt.sh
+            
+            # Start the containers
+            echo "Docker compose up"
+            docker compose -f docker-compose-test.yml up -d
+            
+            # Clean up dangling images
+            docker rmi $(docker images --filter "dangling=true" -q --no-trunc) || true
