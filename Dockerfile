@@ -9,6 +9,9 @@ RUN apt-get update && apt-get install -y \
     libxslt-dev \
     libssl-dev \
     pkg-config \
+    gcc \
+    build-essential \
+    python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for better caching
