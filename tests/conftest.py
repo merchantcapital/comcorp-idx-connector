@@ -5,10 +5,15 @@ from unittest.mock import patch, mock_open, MagicMock
 from pathlib import Path
 
 # Create mock classes and functions
+class MockService:
+    """Mock for zeep.Client.service."""
+    def __init__(self):
+        self.Submit = MagicMock()
+
 class MockClient:
     """Mock for zeep.Client."""
     def __init__(self, *args, **kwargs):
-        self.service = MagicMock()
+        self.service = MockService()
         self.wsdl = MagicMock()
         self.transport = MagicMock()
         self.plugins = []
@@ -22,8 +27,14 @@ def pytest_configure(config):
     # Apply patches
     patch('builtins.open', mock_file).start()
     
+    # Create a mock client instance for provider_response_service
+    mock_client = MagicMock()
+    
     # Mock zeep.Client
     patch('zeep.Client', MockClient).start()
+    
+    # Mock the client in provider_response_service
+    patch('app.provider_response_service.client', mock_client).start()
     
     # Mock key data
     mock_private_key = "-----BEGIN PRIVATE KEY-----\nMOCK_PRIVATE_KEY_DATA\n-----END PRIVATE KEY-----"

@@ -340,7 +340,7 @@ class TestProviderResponseService(unittest.TestCase):
         
         # Check the response
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content_type, 'application/soap+xml')
+        self.assertEqual(response.content_type, 'application/soap+xml; charset=utf-8')
         
         # Parse the response XML
         response_xml = etree.fromstring(response.data)
@@ -371,7 +371,7 @@ class TestProviderResponseService(unittest.TestCase):
         
         # Check the response
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content_type, 'application/soap+xml')
+        self.assertEqual(response.content_type, 'application/soap+xml; charset=utf-8')
         
         # Parse the response XML
         response_xml = etree.fromstring(response.data)
@@ -402,7 +402,7 @@ class TestProviderResponseService(unittest.TestCase):
         
         # Check the response
         self.assertEqual(response.status_code, 500)
-        self.assertEqual(response.content_type, 'application/soap+xml')
+        self.assertEqual(response.content_type, 'application/soap+xml; charset=utf-8')
         
         # Parse the response XML
         response_xml = etree.fromstring(response.data)

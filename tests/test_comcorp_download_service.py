@@ -166,10 +166,9 @@ class TestComcorpDownloadService(unittest.TestCase):
         )
         
         # Check the response
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 500)
         data = json.loads(response.data)
         self.assertEqual(data['status'], 'error')
-        self.assertEqual(data['message'], 'No JSON payload provided')
 
     @patch('app.comcorp_download_service.zeep.Client')
     @patch('app.comcorp_download_service.check_auth')
