@@ -4,8 +4,8 @@ from zeep.wsse import utils
 from datetime import datetime, timedelta
 import pytz
 import base64
-from constants import PRIVATE_KEY, PUBLIC_KEY
-from crypto import encrypt, decrypt, encode
+from app.constants import PRIVATE_KEY, PUBLIC_KEY
+from app.crypto_wsse import encode
 
 class BinarySignatureTimestamp(BinarySignature):
     def apply(self, envelope, headers):
@@ -13,7 +13,7 @@ class BinarySignatureTimestamp(BinarySignature):
         
         encoded_public_key = encode(PUBLIC_KEY)
         binarySecurityToken = utils.WSU('BinarySecurityToken',encoded_public_key)
-        #security.append(binarySecurityToken)
+        security.append(binarySecurityToken)
 
         utc = pytz.UTC
         created = datetime.now(utc)
