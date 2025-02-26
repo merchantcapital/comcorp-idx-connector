@@ -17,7 +17,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app/ ./app/
 COPY config/ ./config/
 COPY certs/ ./certs/
+
+# Create wsdl directory
+RUN mkdir -p ./wsdl/
+
+# Copy wsdl files if they exist (will be ignored if directory is empty)
 COPY wsdl/ ./wsdl/
+
 COPY wsgi.py .
 
 # Set environment variables
