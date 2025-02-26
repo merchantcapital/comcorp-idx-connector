@@ -21,9 +21,7 @@ COPY certs/ ./certs/
 # Create wsdl directory
 RUN mkdir -p ./wsdl/
 
-# Copy wsdl files if they exist (will be ignored if directory is empty)
-COPY wsdl/ ./wsdl/
-
+# Skip copying wsdl files for now - they will be mounted at runtime
 COPY wsgi.py .
 
 # Set environment variables
