@@ -91,6 +91,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
+          context: .
+          file: ./Dockerfile
           push: true
           tags: 655149046626.dkr.ecr.eu-west-1.amazonaws.com/comcorp-idx-connector:test
 
