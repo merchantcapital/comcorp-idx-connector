@@ -1,8 +1,17 @@
 import os
 import sys
 import pytest
-from unittest.mock import patch, mock_open
+from unittest.mock import patch, mock_open, MagicMock
 from pathlib import Path
+
+# Create mock classes and functions
+class MockClient:
+    """Mock for zeep.Client."""
+    def __init__(self, *args, **kwargs):
+        self.service = MagicMock()
+        self.wsdl = MagicMock()
+        self.transport = MagicMock()
+        self.plugins = []
 
 # Patch the constants before the modules are imported
 def pytest_configure(config):
@@ -12,6 +21,9 @@ def pytest_configure(config):
     
     # Apply patches
     patch('builtins.open', mock_file).start()
+    
+    # Mock zeep.Client
+    patch('zeep.Client', MockClient).start()
     
     # Mock key data
     mock_private_key = "-----BEGIN PRIVATE KEY-----\nMOCK_PRIVATE_KEY_DATA\n-----END PRIVATE KEY-----"
