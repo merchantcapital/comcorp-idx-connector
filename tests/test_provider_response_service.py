@@ -323,10 +323,7 @@ class TestProviderResponseService(unittest.TestCase):
         self.assertEqual(error_strings[1].text, "Error 2")
 
     @patch('app.provider_response_service.process_submit_request')
-    @patch('app.provider_response_service.PRIVATE_KEY_FILE', 'certs/private_key.pem')
-    @patch('app.provider_response_service.PUBLIC_KEY_FILE', 'certs/public_key.pem')
-    @patch('builtins.open', new_callable=mock_open, read_data='mock key data')
-    def test_provider_response_service_success(self, mock_file, mock_process):
+    def test_provider_response_service_success(self, mock_process):
         """Test provider_response_service with successful processing."""
         # Mock process_submit_request to return True
         mock_process.return_value = True
@@ -357,10 +354,7 @@ class TestProviderResponseService(unittest.TestCase):
         self.assertEqual(value.text, "true")
 
     @patch('app.provider_response_service.process_submit_request')
-    @patch('app.provider_response_service.PRIVATE_KEY_FILE', 'certs/private_key.pem')
-    @patch('app.provider_response_service.PUBLIC_KEY_FILE', 'certs/public_key.pem')
-    @patch('builtins.open', new_callable=mock_open, read_data='mock key data')
-    def test_provider_response_service_failure(self, mock_file, mock_process):
+    def test_provider_response_service_failure(self, mock_process):
         """Test provider_response_service with processing failure."""
         # Mock process_submit_request to return False
         mock_process.return_value = False
@@ -391,10 +385,7 @@ class TestProviderResponseService(unittest.TestCase):
         self.assertEqual(value.text, "false")
 
     @patch('app.provider_response_service.process_submit_request')
-    @patch('app.provider_response_service.PRIVATE_KEY_FILE', 'certs/private_key.pem')
-    @patch('app.provider_response_service.PUBLIC_KEY_FILE', 'certs/public_key.pem')
-    @patch('builtins.open', new_callable=mock_open, read_data='mock key data')
-    def test_provider_response_service_exception(self, mock_file, mock_process):
+    def test_provider_response_service_exception(self, mock_process):
         """Test provider_response_service with exception."""
         # Mock process_submit_request to raise an exception
         mock_process.side_effect = Exception("Test error")
