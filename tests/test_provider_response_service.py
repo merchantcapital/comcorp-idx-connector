@@ -442,16 +442,6 @@ class TestProviderResponseService(unittest.TestCase):
             self.assertEqual(data['status'], 'unhealthy')
             self.assertEqual(data['service'], 'mcauto-soap-client')
             self.assertEqual(data['reason'], 'WSDL not loaded')
-        
-        # Make the request
-        response = self.client.get('/health')
-        
-        # Check the response
-        self.assertEqual(response.status_code, 200)
-        data = json.loads(response.data)
-        self.assertEqual(data['status'], 'unhealthy')
-        self.assertEqual(data['service'], 'mcauto-soap-client')
-        self.assertEqual(data['reason'], 'WSDL not loaded')
 
 
 if __name__ == '__main__':
