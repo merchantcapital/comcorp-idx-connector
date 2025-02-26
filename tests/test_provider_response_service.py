@@ -429,8 +429,12 @@ class TestProviderResponseService(unittest.TestCase):
         self.assertEqual(data['status'], 'healthy')
         self.assertEqual(data['service'], 'mcauto-soap-client')
 
-    def test_health_check_unhealthy(self):
+    @patch('app.provider_response_service.client')
+    def test_health_check_unhealthy(self, mock_client):
         """Test health_check when service is unhealthy."""
+        # Configure the mock to appear unhealthy
+        mock_client.__bool__.return_value = False
+        
         # Make the request
         response = self.client.get('/health')
         
