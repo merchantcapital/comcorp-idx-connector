@@ -1,6 +1,7 @@
 import unittest
 import json
-from unittest.mock import patch, MagicMock
+import os
+from unittest.mock import patch, MagicMock, mock_open
 from flask import Flask
 from lxml import etree
 
@@ -98,7 +99,10 @@ class TestComcorpDownloadService(unittest.TestCase):
     @patch('app.comcorp_download_service.getHeader')
     @patch('app.comcorp_download_service.getDecryptedBody')
     @patch('app.comcorp_download_service.check_auth')
-    def test_comcorp_download_request_success(self, mock_check_auth, mock_get_body, mock_get_header, mock_client):
+    @patch('app.comcorp_download_service.PRIVATE_KEY_FILE', 'certs/private_key.pem')
+    @patch('app.comcorp_download_service.PUBLIC_KEY_FILE', 'certs/public_key.pem')
+    @patch('builtins.open', new_callable=mock_open, read_data='mock key data')
+    def test_comcorp_download_request_success(self, mock_file, mock_check_auth, mock_get_body, mock_get_header, mock_client):
         """Test successful SOAP request in comcorp_download_request."""
         # Mock authentication
         mock_check_auth.return_value = True
@@ -172,7 +176,10 @@ class TestComcorpDownloadService(unittest.TestCase):
 
     @patch('app.comcorp_download_service.zeep.Client')
     @patch('app.comcorp_download_service.check_auth')
-    def test_comcorp_download_request_soap_error(self, mock_check_auth, mock_client):
+    @patch('app.comcorp_download_service.PRIVATE_KEY_FILE', 'certs/private_key.pem')
+    @patch('app.comcorp_download_service.PUBLIC_KEY_FILE', 'certs/public_key.pem')
+    @patch('builtins.open', new_callable=mock_open, read_data='mock key data')
+    def test_comcorp_download_request_soap_error(self, mock_file, mock_check_auth, mock_client):
         """Test comcorp_download_request with SOAP error."""
         # Mock authentication
         mock_check_auth.return_value = True
