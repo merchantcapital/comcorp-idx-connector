@@ -2,10 +2,12 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
-# Install system dependencies required for xmlsec
+# Install system dependencies required for Python packages
 RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libxmlsec1-dev \
+    libxslt-dev \
+    libssl-dev \
     pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
