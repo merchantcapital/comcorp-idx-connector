@@ -429,21 +429,19 @@ class TestProviderResponseService(unittest.TestCase):
         self.assertEqual(data['status'], 'healthy')
         self.assertEqual(data['service'], 'mcauto-soap-client')
 
-    @patch('app.provider_response_service.client')
-    def test_health_check_unhealthy(self, mock_client):
+    def test_health_check_unhealthy(self):
         """Test health_check when service is unhealthy."""
-        # Mock client to be None
-        mock_client.__bool__.return_value = False
-        
-        # Make the request
-        response = self.client.get('/health')
-        
-        # Check the response
-        self.assertEqual(response.status_code, 500)
-        data = json.loads(response.data)
-        self.assertEqual(data['status'], 'unhealthy')
-        self.assertEqual(data['service'], 'mcauto-soap-client')
-        self.assertEqual(data['reason'], 'WSDL not loaded')
+        # Directly patch the client.__bool__ method in the health_check function
+        with patch('app.provider_response_service.client.__bool__', return_value=False):
+            # Make the request
+            response = self.client.get('/health')
+            
+            # Check the response
+            self.assertEqual(response.status_code, 500)
+            data = json.loads(response.data)
+            self.assertEqual(data['status'], 'unhealthy')
+            self.assertEqual(data['service'], 'mcauto-soap-client')
+            self.assertEqual(data['reason'], 'WSDL not loaded')
 
 
 if __name__ == '__main__':

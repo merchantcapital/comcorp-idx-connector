@@ -122,7 +122,10 @@ class TestComcorpDownloadService(unittest.TestCase):
             'Reference': '12345',
             'Message': 'Request processed successfully'
         }
-        mock_soap.service.Submit.return_value = mock_result
+        # Set up the mock differently to avoid AttributeError
+        mock_service = MagicMock()
+        mock_service.Submit.return_value = mock_result
+        mock_soap.service = mock_service
         
         # Create a mock history plugin
         mock_history = MagicMock()
