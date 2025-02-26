@@ -115,17 +115,14 @@ class TestComcorpDownloadService(unittest.TestCase):
         mock_body = {'Body': 'test_body'}
         mock_get_body.return_value = mock_body
         
-        # Mock SOAP response
+        # Create a mock response object with the expected attributes
         mock_result = MagicMock()
-        mock_result.__dict__ = {
-            'Status': 'Success',
-            'Reference': '12345',
-            'Message': 'Request processed successfully'
-        }
-        # Set up the mock differently to avoid AttributeError
-        mock_service = MagicMock()
-        mock_service.Submit.return_value = mock_result
-        mock_soap.service = mock_service
+        mock_result.Status = 'Success'
+        mock_result.Reference = '12345'
+        mock_result.Message = 'Request processed successfully'
+        
+        # Directly mock the service.Submit method call
+        mock_soap.service.Submit.return_value = mock_result
         
         # Create a mock history plugin
         mock_history = MagicMock()
