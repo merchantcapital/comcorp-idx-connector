@@ -145,33 +145,33 @@ jobs:
           port: 22
           envs: AWSID,AWSKEY,REGION,CERTBOT_EMAIL
           script: |
-            aws configure set aws_access_key_id $AWSID
-            aws configure set aws_secret_access_key $AWSKEY
-            aws configure set default.region $REGION
+            sudo aws configure set aws_access_key_id $AWSID
+            sudo aws configure set aws_secret_access_key $AWSKEY
+            sudo aws configure set default.region $REGION
             
             # Export CERTBOT_EMAIL for the init-letsencrypt.sh script
             export CERTBOT_EMAIL=$CERTBOT_EMAIL
             echo "Update .env.test"
-            rm .env.test
+            sudo rm .env.test
             touch .env.test
             echo BASIC_AUTH_USERNAME=$BASIC_AUTH_USERNAME >> .env.test
             echo BASIC_AUTH_PASSWORD=$BASIC_AUTH_PASSWORD >> .env.test
-            cat .env.test
+            sudo cat .env.test
             echo "AWS ECR login"
-            aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 655149046626.dkr.ecr.eu-west-1.amazonaws.com
+            sudo aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 655149046626.dkr.ecr.eu-west-1.amazonaws.com
             echo "Docker compose pull"
-            docker compose -f docker-compose-test.yml pull
+            sudo docker compose -f docker-compose-test.yml pull
             echo "Docker compose down"
-            docker compose -f docker-compose-test.yml down
+            sudo docker compose -f docker-compose-test.yml down
             
             # Prepare for Certbot initialization
             echo "Creating Certbot directories if they don't exist"
-            mkdir -p certbot/conf
-            mkdir -p certbot/www
+            sudo mkdir -p certbot/conf
+            sudo mkdir -p certbot/www
             
             # Make sure the init-letsencrypt.sh script is executable
             echo "Making init-letsencrypt.sh executable"
-            chmod +x init-letsencrypt.sh
+            sudo chmod +x init-letsencrypt.sh
             
             # Run the Certbot initialization script
             echo "Running Certbot initialization script"
@@ -179,7 +179,7 @@ jobs:
             
             # Start the containers
             echo "Docker compose up"
-            docker compose -f docker-compose-test.yml up -d
+            sudo docker compose -f docker-compose-test.yml up -d
             
             # Clean up dangling images
-            docker rmi $(docker images --filter "dangling=true" -q --no-trunc) || true
+            sudo docker rmi $(docker images --filter "dangling=true" -q --no-trunc) || true
