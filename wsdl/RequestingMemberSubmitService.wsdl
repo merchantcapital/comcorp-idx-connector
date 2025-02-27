@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions name="ConsumerDecryptedService" targetNamespace="http://SecureX.ConsumerSubmitService/V1" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://SecureX.ConsumerSubmitService/V1" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing">
+	<wsp:Policy wsu:Id="CustomBinding_IConsumerDecryptedService_policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:AsymmetricBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<wsp:Policy>
+						<sp:InitiatorToken>
+							<wsp:Policy>
+								<sp:X509Token sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/AlwaysToRecipient">
+									<wsp:Policy>
+										<sp:WssX509V3Token10/>
+									</wsp:Policy>
+								</sp:X509Token>
+							</wsp:Policy>
+						</sp:InitiatorToken>
+						<sp:RecipientToken>
+							<wsp:Policy>
+								<sp:X509Token sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/Never">
+									<wsp:Policy>
+										<sp:WssX509V3Token10/>
+									</wsp:Policy>
+								</sp:X509Token>
+							</wsp:Policy>
+						</sp:RecipientToken>
+						<sp:AlgorithmSuite>
+							<wsp:Policy>
+								<sp:Basic256Rsa15/>
+							</wsp:Policy>
+						</sp:AlgorithmSuite>
+						<sp:Layout>
+							<wsp:Policy>
+								<sp:Strict/>
+							</wsp:Policy>
+						</sp:Layout>
+						<sp:IncludeTimestamp/>
+						<sp:OnlySignEntireHeadersAndBody/>
+					</wsp:Policy>
+				</sp:AsymmetricBinding>
+				<sp:Wss10 xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<wsp:Policy>
+						<sp:MustSupportRefKeyIdentifier/>
+						<sp:MustSupportRefIssuerSerial/>
+					</wsp:Policy>
+				</sp:Wss10>
+				<sp:Trust10 xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<wsp:Policy>
+						<sp:MustSupportIssuedTokens/>
+						<sp:RequireClientEntropy/>
+						<sp:RequireServerEntropy/>
+					</wsp:Policy>
+				</sp:Trust10>
+				<sp:TransportBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<wsp:Policy>
+						<sp:TransportToken>
+							<wsp:Policy>
+								<sp:HttpsToken RequireClientCertificate="false"/>
+							</wsp:Policy>
+						</sp:TransportToken>
+						<sp:AlgorithmSuite>
+							<wsp:Policy>
+								<sp:Basic256/>
+							</wsp:Policy>
+						</sp:AlgorithmSuite>
+						<sp:Layout>
+							<wsp:Policy>
+								<sp:Strict/>
+							</wsp:Policy>
+						</sp:Layout>
+						<sp:IncludeTimestamp/>
+					</wsp:Policy>
+				</sp:TransportBinding>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+	<wsp:Policy wsu:Id="CustomBinding_IConsumerDecryptedService_Submit_Input_policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<sp:Body/>
+				</sp:SignedParts>
+				<sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<sp:Body/>
+				</sp:EncryptedParts>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+	<wsdl:types>
+		<xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/">
+			<xs:element name="anyType" nillable="true" type="xs:anyType"/>
+			<xs:element name="anyURI" nillable="true" type="xs:anyURI"/>
+			<xs:element name="base64Binary" nillable="true" type="xs:base64Binary"/>
+			<xs:element name="boolean" nillable="true" type="xs:boolean"/>
+			<xs:element name="byte" nillable="true" type="xs:byte"/>
+			<xs:element name="dateTime" nillable="true" type="xs:dateTime"/>
+			<xs:element name="decimal" nillable="true" type="xs:decimal"/>
+			<xs:element name="double" nillable="true" type="xs:double"/>
+			<xs:element name="float" nillable="true" type="xs:float"/>
+			<xs:element name="int" nillable="true" type="xs:int"/>
+			<xs:element name="long" nillable="true" type="xs:long"/>
+			<xs:element name="QName" nillable="true" type="xs:QName"/>
+			<xs:element name="short" nillable="true" type="xs:short"/>
+			<xs:element name="string" nillable="true" type="xs:string"/>
+			<xs:element name="unsignedByte" nillable="true" type="xs:unsignedByte"/>
+			<xs:element name="unsignedInt" nillable="true" type="xs:unsignedInt"/>
+			<xs:element name="unsignedLong" nillable="true" type="xs:unsignedLong"/>
+			<xs:element name="unsignedShort" nillable="true" type="xs:unsignedShort"/>
+			<xs:element name="char" nillable="true" type="tns:char"/>
+			<xs:simpleType name="char">
+				<xs:restriction base="xs:int"/>
+			</xs:simpleType>
+			<xs:element name="duration" nillable="true" type="tns:duration"/>
+			<xs:simpleType name="duration">
+				<xs:restriction base="xs:duration">
+					<xs:pattern value="\-?P(\d*D)?(T(\d*H)?(\d*M)?(\d*(\.\d*)?S)?)?"/>
+					<xs:minInclusive value="-P10675199DT2H48M5.4775808S"/>
+					<xs:maxInclusive value="P10675199DT2H48M5.4775807S"/>
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:element name="guid" nillable="true" type="tns:guid"/>
+			<xs:simpleType name="guid">
+				<xs:restriction base="xs:string">
+					<xs:pattern value="[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}"/>
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:attribute name="FactoryType" type="xs:QName"/>
+			<xs:attribute name="Id" type="xs:ID"/>
+			<xs:attribute name="Ref" type="xs:IDREF"/>
+		</xs:schema>
+		<xs:schema elementFormDefault="qualified" targetNamespace="http://IDX.Contract/V1" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://IDX.Contract/V1">
+			<xs:complexType name="IDXConsumerSubmitMessage">
+				<xs:sequence>
+					<xs:element name="AccountNumber" nillable="true" type="xs:string"/>
+					<xs:element name="AccountType" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="BranchCode" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="CellphoneNumber" nillable="true" type="xs:string"/>
+					<xs:element name="DateFrom" type="xs:dateTime"/>
+					<xs:element name="DateTo" type="xs:dateTime"/>
+					<xs:element minOccurs="0" name="EmailAddress" nillable="true" type="xs:string"/>
+					<xs:element name="JointAccount" type="xs:boolean"/>
+					<xs:element minOccurs="0" name="PhysicalEntities" nillable="true" type="tns:ArrayOfEntity"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="IDXConsumerSubmitMessage" nillable="true" type="tns:IDXConsumerSubmitMessage"/>
+			<xs:complexType name="ArrayOfEntity">
+				<xs:sequence>
+					<xs:element minOccurs="0" maxOccurs="unbounded" name="Entity" nillable="true" type="tns:Entity"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="ArrayOfEntity" nillable="true" type="tns:ArrayOfEntity"/>
+			<xs:complexType name="Entity">
+				<xs:sequence>
+					<xs:element name="IdentificationNo" nillable="true" type="xs:string"/>
+					<xs:element name="IdentificationType" type="tns:IdentificationType"/>
+					<xs:element minOccurs="0" name="Initials" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="Name" nillable="true" type="xs:string"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="Entity" nillable="true" type="tns:Entity"/>
+			<xs:simpleType name="IdentificationType">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="IDNumber"/>
+					<xs:enumeration value="PassportNumber"/>
+					<xs:enumeration value="LegalEntityNumber"/>
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:element name="IdentificationType" nillable="true" type="tns:IdentificationType"/>
+		</xs:schema>
+		<xs:schema elementFormDefault="qualified" targetNamespace="http://SecureX.ConsumerSubmitService/V1" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+			<xs:element name="Body" nillable="true" type="xs:anyType"/>
+			<xs:element name="Value" nillable="true" type="xs:string"/>
+		</xs:schema>
+		<xs:schema elementFormDefault="qualified" targetNamespace="http://SecureX.Common/V1" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://SecureX.Common/V1" xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/">
+			<xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/"/>
+			<xs:complexType name="SecureXHeader">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="Additional" nillable="true" type="tns:ArrayOfKeyValuePair"/>
+					<xs:element minOccurs="0" name="ConsumerBusinessUnit" type="ser:guid"/>
+					<xs:element minOccurs="0" name="ConsumerReference" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="ExchangeReference" type="xs:long"/>
+					<xs:element minOccurs="0" name="InitiatingIP" nillable="true" type="xs:string"/>
+					<xs:element name="ProductId" type="xs:unsignedByte"/>
+					<xs:element minOccurs="0" name="ProviderBusinessUnit" type="ser:guid"/>
+					<xs:element minOccurs="0" name="ProviderReference" nillable="true" type="xs:string"/>
+					<xs:element minOccurs="0" name="TransactionStatus" type="xs:unsignedByte"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="SecureXHeader" nillable="true" type="tns:SecureXHeader"/>
+			<xs:complexType name="ArrayOfKeyValuePair">
+				<xs:sequence>
+					<xs:element minOccurs="0" maxOccurs="unbounded" name="KeyValuePair" nillable="true" type="tns:KeyValuePair"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="ArrayOfKeyValuePair" nillable="true" type="tns:ArrayOfKeyValuePair"/>
+			<xs:complexType name="KeyValuePair">
+				<xs:sequence>
+					<xs:element name="Key" nillable="true" type="xs:string"/>
+					<xs:element name="Value" nillable="true" type="xs:string"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="KeyValuePair" nillable="true" type="tns:KeyValuePair"/>
+			<xs:element name="Header" nillable="true" type="tns:SecureXHeader"/>
+		</xs:schema>
+		<xs:schema elementFormDefault="qualified" targetNamespace="http://SecureX.Fault/V1" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://SecureX.Fault/V1">
+			<xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+			<xs:complexType name="SecureXFault">
+				<xs:sequence>
+					<xs:element name="Code" type="xs:int"/>
+					<xs:element name="Errors" nillable="true" type="q1:ArrayOfstring" xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="SecureXFault" nillable="true" type="tns:SecureXFault"/>
+		</xs:schema>
+		<xs:schema elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+			<xs:complexType name="ArrayOfstring">
+				<xs:sequence>
+					<xs:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="xs:string"/>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:element name="ArrayOfstring" nillable="true" type="tns:ArrayOfstring"/>
+		</xs:schema>
+	</wsdl:types>
+	<wsdl:message name="ConsumerSubmitDecryptedRequestMessage">
+		<wsdl:part name="Body" element="tns:Body"/>
+	</wsdl:message>
+	<wsdl:message name="ConsumerSubmitDecryptedRequestMessage_Headers">
+		<wsdl:part name="Header" element="q1:Header" xmlns:q1="http://SecureX.Common/V1"/>
+	</wsdl:message>
+	<wsdl:message name="ConsumerSubmitResponseMessage">
+		<wsdl:part name="Value" element="tns:Value"/>
+	</wsdl:message>
+	<wsdl:message name="IConsumerDecryptedService_Submit_SecureXFaultFault_FaultMessage">
+		<wsdl:part name="detail" element="q2:SecureXFault" xmlns:q2="http://SecureX.Fault/V1"/>
+	</wsdl:message>
+	<wsdl:portType name="IConsumerDecryptedService">
+		<wsdl:operation name="Submit">
+			<wsdl:input wsaw:Action="http://SecureX.ConsumerSubmitService/V1/IConsumerDecryptedService/Submit" name="ConsumerSubmitDecryptedRequestMessage" message="tns:ConsumerSubmitDecryptedRequestMessage"/>
+			<wsdl:output wsaw:Action="http://SecureX.ConsumerSubmitService/V1/IConsumerDecryptedService/SubmitResponse" name="ConsumerSubmitResponseMessage" message="tns:ConsumerSubmitResponseMessage"/>
+			<wsdl:fault wsaw:Action="http://SecureX.ConsumerSubmitService/V1/IConsumerDecryptedService/SubmitSecureXFaultFault" name="SecureXFaultFault" message="tns:IConsumerDecryptedService_Submit_SecureXFaultFault_FaultMessage"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="CustomBinding_IConsumerDecryptedService" type="tns:IConsumerDecryptedService">
+		<wsp:PolicyReference URI="#CustomBinding_IConsumerDecryptedService_policy"/>
+		<soap12:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="Submit">
+			<soap12:operation soapAction="http://SecureX.ConsumerSubmitService/V1/IConsumerDecryptedService/Submit" style="document"/>
+			<wsdl:input name="ConsumerSubmitDecryptedRequestMessage">
+				<wsp:PolicyReference URI="#CustomBinding_IConsumerDecryptedService_Submit_Input_policy"/>
+				<soap12:header message="tns:ConsumerSubmitDecryptedRequestMessage_Headers" part="Header" use="literal"/>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output name="ConsumerSubmitResponseMessage">
+				<soap12:body use="literal"/>
+			</wsdl:output>
+			<wsdl:fault name="SecureXFaultFault">
+				<soap12:fault use="literal" name="SecureXFaultFault" namespace=""/>
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="ConsumerDecryptedService">
+		<wsdl:port name="CustomBinding_IConsumerDecryptedService" binding="tns:CustomBinding_IConsumerDecryptedService">
+			<soap12:address location="https://dev.comcorp-idx.co.za/DEA/ConsumerDecryptedService.svc"/>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>
