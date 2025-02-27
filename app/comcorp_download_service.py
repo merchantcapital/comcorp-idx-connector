@@ -87,17 +87,36 @@ def comcorp_download_request():
         # Initialize SOAP client
         encrypt_plugin = encryptPlugin()
         history = HistoryPlugin()
-        wsdl = REQUESTING_MEMBER_WSDL
         private_key_filename = PRIVATE_KEY_FILE
         public_key_filename = PUBLIC_KEY_FILE
         
-        soap = zeep.Client(
-            wsdl=wsdl, 
-            service_name="ConsumerDecryptedService",
-            port_name="CustomBinding_IConsumerDecryptedService",
-            wsse=BinarySignatureTimestamp(private_key_filename, public_key_filename, ''),
-            plugins=[encrypt_plugin, history]
-        )
+        # Try to load WSDL with absolute path first, then fall back to relative path
+        try:
+            # Absolute path for Docker container
+            wsdl_path = f"/app/wsdl/{REQUESTING_MEMBER_WSDL}"
+            logger.info(f"Attempting to load WSDL from: {wsdl_path}")
+            
+            soap = zeep.Client(
+                wsdl=wsdl_path, 
+                service_name="ConsumerDecryptedService",
+                port_name="CustomBinding_IConsumerDecryptedService",
+                wsse=BinarySignatureTimestamp(private_key_filename, public_key_filename, ''),
+                plugins=[encrypt_plugin, history]
+            )
+            logger.info("WSDL loaded successfully using absolute path")
+        except FileNotFoundError:
+            # Relative path for local development
+            wsdl_path = f"wsdl/{REQUESTING_MEMBER_WSDL}"
+            logger.info(f"Absolute path failed, trying relative path: {wsdl_path}")
+            
+            soap = zeep.Client(
+                wsdl=wsdl_path, 
+                service_name="ConsumerDecryptedService",
+                port_name="CustomBinding_IConsumerDecryptedService",
+                wsse=BinarySignatureTimestamp(private_key_filename, public_key_filename, ''),
+                plugins=[encrypt_plugin, history]
+            )
+            logger.info("WSDL loaded successfully using relative path")
         
         # Get header and body
         header = getHeader(soap)

@@ -23,8 +23,18 @@ logger = logging.getLogger(__name__)
 from app import app
 
 # Load the WSDL
-wsdl_path = f"wsdl/{PROVIDER_RESPONSE_WSDL}"
-client = zeep.Client(wsdl=wsdl_path)
+try:
+    # Try absolute path for Docker container
+    wsdl_path = f"/app/wsdl/{PROVIDER_RESPONSE_WSDL}"
+    logger.info(f"Attempting to load WSDL from: {wsdl_path}")
+    client = zeep.Client(wsdl=wsdl_path)
+    logger.info("WSDL loaded successfully using absolute path")
+except FileNotFoundError:
+    # Fall back to relative path for local development
+    wsdl_path = f"wsdl/{PROVIDER_RESPONSE_WSDL}"
+    logger.info(f"Absolute path failed, trying relative path: {wsdl_path}")
+    client = zeep.Client(wsdl=wsdl_path)
+    logger.info("WSDL loaded successfully using relative path")
 
 def verify_security(envelope):
     """
