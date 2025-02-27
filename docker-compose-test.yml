@@ -13,6 +13,11 @@ services:
     restart: always
     networks:
       - app-network
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: eu-west-1
+        awslogs-group: comcorp-idx-connector-test
 
   nginx:
     image: nginx:latest
