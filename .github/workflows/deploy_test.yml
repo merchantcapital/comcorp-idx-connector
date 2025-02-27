@@ -120,11 +120,7 @@ jobs:
             from: s3://mc-dotenv/comcorp-idx-connector-dotenv/.env.test
             prefix: DOTENV_
 
-      - name: Set permissions on files
-        run: |
-          chmod -R 755 ./wsdl/
-          ls -la ./wsdl/
-          
+      # Skip copying WSDL files directly, we'll create them on the server
       - name: Copy files to EC2 server and run deployment
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -132,7 +128,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          source: "init-letsencrypt.sh,docker-compose-test.yml,Dockerfile,config/**,requirements.txt,app/**,certs/**,wsgi.py,wsdl/**"
+          source: "init-letsencrypt.sh,docker-compose-test.yml,Dockerfile,config/**,requirements.txt,app/**,certs/**,wsgi.py"
           target: "~/"
           
       - name: Docker pull & run from github
@@ -181,6 +177,16 @@ jobs:
             # Run the Certbot initialization script
             echo "Running Certbot initialization script"
             ./init-letsencrypt.sh
+            
+            # Create wsdl directory and files
+            echo "Creating wsdl directory and files"
+            mkdir -p wsdl
+            chmod 777 wsdl
+            
+            # Create empty WSDL files (they will be mounted from the container)
+            touch wsdl/ProviderResponseService.wsdl
+            touch wsdl/RequestingMemberSubmitService.wsdl
+            chmod 666 wsdl/*.wsdl
             
             # Start the containers
             echo "Docker compose up"

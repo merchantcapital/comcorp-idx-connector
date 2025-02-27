@@ -7,7 +7,7 @@ services:
       - ./app:/app/app
       - ./config:/app/config
       - ./certs:/app/certs
-      - ./wsdl:/app/wsdl  # Mount WSDL files from host to container
+      # Removed wsdl mount to use files from Docker image
     env_file:
       - .env.test
     environment:
