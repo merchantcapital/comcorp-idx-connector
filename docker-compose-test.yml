@@ -8,6 +8,12 @@ services:
       - ./config:/app/config
       - ./certs:/app/certs
       - ./wsdl:/app/wsdl
+    env_file:
+      - .env.test
+    environment:
+      - PYTHONUNBUFFERED=1
+      - BASIC_AUTH_USERNAME=${BASIC_AUTH_USERNAME:-comcorp_idx_user}
+      - BASIC_AUTH_PASSWORD=${BASIC_AUTH_PASSWORD:-MGBNU4DyJnSXaUT}
     expose:
       - 8000
     restart: always
