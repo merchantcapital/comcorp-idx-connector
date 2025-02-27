@@ -1,20 +1,28 @@
 from pathlib import Path
+import os
 
 REQUESTING_MEMBER_WSDL = 'RequestingMemberSubmitService.wsdl'
 PROVIDER_RESPONSE_WSDL = 'ProviderResponseService.wsdl'
 
-PRIVATE_KEY_PATH = Path('../certs/private_key.pem')
-PUBLIC_KEY_PATH = Path('../certs/comcorp_uat.crt')
+# Use paths relative to the Docker container working directory
+PRIVATE_KEY_PATH = Path('certs/private_key.pem')
+PUBLIC_KEY_PATH = Path('certs/comcorp_uat.crt')
 
-PRIVATE_KEY_FILE = '../certs/private_key.pem'
-PUBLIC_KEY_FILE = '../certs/comcorp.cer'
+PRIVATE_KEY_FILE = 'certs/private_key.pem'
+PUBLIC_KEY_FILE = 'certs/comcorp.cer'
 
-# Load the keys into memory
-with open(PRIVATE_KEY_PATH, 'r') as key_file:
-    PRIVATE_KEY = key_file.read()
-    
-with open(PUBLIC_KEY_PATH, 'r') as cert_file:
-    PUBLIC_KEY = cert_file.read()
+# Load the keys into memory only if the files exist
+try:
+    with open(PRIVATE_KEY_PATH, 'r') as key_file:
+        PRIVATE_KEY = key_file.read()
+        
+    with open(PUBLIC_KEY_PATH, 'r') as cert_file:
+        PUBLIC_KEY = cert_file.read()
+except FileNotFoundError:
+    # Log the error but don't crash the application
+    print(f"Warning: Certificate files not found at {PRIVATE_KEY_PATH} or {PUBLIC_KEY_PATH}")
+    PRIVATE_KEY = ""
+    PUBLIC_KEY = ""
 
 # SOAP envelope
 SOAP_NS = 'http://www.w3.org/2003/05/soap-envelope'
