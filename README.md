@@ -8,5 +8,5 @@
 
 - Give current user explicit read-permission: `icacls.exe $path /GRANT:R "$($env:USERNAME):(R)"`
 
-- Disable inheritance and remove inherited permissions: `icacls.exe ./private_key.pem /inheritance:r`
+- Disablea inheritance and remove inherited permissions: `icacls.exe ./private_key.pem /inheritance:r`
  
