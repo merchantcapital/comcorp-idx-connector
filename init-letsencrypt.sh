@@ -41,7 +41,7 @@ openssl req -x509 -nodes -newkey rsa:$rsa_key_size -days 1 \
   -subj "/CN=localhost"
 
 echo "Starting Nginx..."
-docker-compose up -d nginx
+docker compose up -d nginx
 
 # Delete dummy certificates
 echo "Deleting dummy certificates..."
@@ -55,7 +55,7 @@ for domain in "${domains[@]}"; do
 done
 
 # Join $domains to -d args
-docker-compose run --rm --entrypoint "\
+docker compose run --rm --entrypoint "\
   certbot certonly --webroot -w /var/www/certbot \
     $staging_arg \
     $domain_args \
@@ -65,7 +65,7 @@ docker-compose run --rm --entrypoint "\
     --force-renewal" certbot
 
 echo "Reloading Nginx..."
-docker-compose exec nginx nginx -s reload
+docker compose exec nginx nginx -s reload
 
 echo "Certbot initialization completed!"
 echo "Your site should now be accessible via HTTPS at https://comcorp-uat.merchantcapital.co.za"
