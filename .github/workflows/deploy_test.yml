@@ -120,6 +120,11 @@ jobs:
             from: s3://mc-dotenv/comcorp-idx-connector-dotenv/.env.test
             prefix: DOTENV_
 
+      - name: Set permissions on files
+        run: |
+          chmod -R 755 ./wsdl/
+          ls -la ./wsdl/
+          
       - name: Copy files to EC2 server and run deployment
         uses: appleboy/scp-action@v0.1.4
         with:
