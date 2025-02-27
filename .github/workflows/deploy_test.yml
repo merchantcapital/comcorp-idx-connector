@@ -127,7 +127,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          source: "init-letsencrypt.sh,docker-compose-test.yml,config/nginx_docker.conf"
+          source: "init-letsencrypt.sh,docker-compose-test.yml,Dockerfile,config/nginx_docker.conf"
           target: "~/"
           
       - name: Docker pull & run from github
