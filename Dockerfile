@@ -23,11 +23,15 @@ COPY app/ ./app/
 COPY config/ ./config/
 COPY certs/ ./certs/
 
-# Create wsdl directory
-RUN mkdir -p ./wsdl/
+# Create wsdl directory and ensure it has correct permissions
+RUN mkdir -p ./wsdl/ && chmod 777 ./wsdl/
 
-# Skip copying wsdl files for now - they will be mounted at runtime
+# Copy WSDL files - these will be overridden by volume mounts if present
+COPY wsdl/ ./wsdl/
 COPY wsgi.py .
+
+# Ensure all directories have correct permissions
+RUN chmod -R 755 /app
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1

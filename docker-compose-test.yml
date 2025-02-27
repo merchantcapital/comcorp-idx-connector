@@ -7,7 +7,7 @@ services:
       - ./app:/app/app
       - ./config:/app/config
       - ./certs:/app/certs
-      - ./wsdl:/app/wsdl
+      - ./wsdl:/app/wsdl  # Mount WSDL files from host to container
     env_file:
       - .env.test
     environment:
